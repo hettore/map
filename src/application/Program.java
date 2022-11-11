@@ -2,12 +2,16 @@ package application;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 public class Program {
 
@@ -121,8 +125,150 @@ public class Program {
 		
 		System.out.println("Confira se a lista está vazia: " + carrosPopulares.isEmpty());
 		
+		System.out.println("-----------------------------------------------");
+		System.out.println();
+		// Ordenação Map
+		
+		/*Dadas as seguintes informações sobre meus livros favoritos e seus autores, 
+		 * crie um dicionário e ordene este dicionário:
+		 * exibindo (Nome Autor - Nome Livro);
+		 * 
+		 * Autor = Hawking, Stephen - Livro = nome: Uma breve História do Tempo, páginas: 256
+		 * Autor = Duhigg, Charles - Livro = nome: O Poder do Hábito, páginas: 408
+		 * Autor = Harari, Yuval Noah - Livro = 21 Lições Para o Século 21, páginas: 432
+		 */
+		
+		System.out.println("-- Ordem aleatória");
+		
+		Map<String, Livro> meusLivros = new HashMap<>() {{
+			put("Hawking, Stephen", new Livro("Uma breve História do Tempo", 256));
+			put("Duhigg, Charles", new Livro("O Poder do Hábito", 408));
+			put("Harari, Yuval Noah", new Livro("21 Lições Para o Século 21", 432));
+		}};
+		
+		for (Map.Entry<String, Livro> livro : meusLivros.entrySet()) {
+			System.out.println(livro.getKey() + " - " + livro.getValue().getNome());
+		}
+		
+		
+		
+		System.out.println("-- Ordem inserção");
+		
+		Map<String, Livro> meusLivros2 = new LinkedHashMap<>() {{
+			put("Hawking, Stephen", new Livro("Uma breve História do Tempo", 256));
+			put("Duhigg, Charles", new Livro("O Poder do Hábito", 408));
+			put("Harari, Yuval Noah", new Livro("21 Lições Para o Século 21", 432));
+		}};
+		
+		for (Map.Entry<String, Livro> livro1 : meusLivros2.entrySet()) {
+			System.out.println(livro1.getKey() + " - " + livro1.getValue().getNome());
+		}
+		
+		
+		
+		System.out.println("-- Ordem alfabética autores");
+		
+		Map<String, Livro> meusLivros3 = new TreeMap<>(meusLivros2);
+		
+		for (Map.Entry<String, Livro> livro2 : meusLivros3.entrySet()) {
+			System.out.println(livro2.getKey() + " - " + livro2.getValue().getNome());
+		}
+		
+		System.out.println("-- Ordem alfabética nomes dos Livros");
+		
+		Set<Map.Entry<String, Livro>> meusLivros4 = new TreeSet<>(new ComparatorNome());
+		meusLivros4.addAll(meusLivros.entrySet());
+		
+		for (Map.Entry<String, Livro> livro2 : meusLivros4) {
+			System.out.println(livro2.getKey() + " - " + livro2.getValue().getNome());
+		}
+		
+		System.out.println("-- Ordenar por número de páginas");
+		
+		Set<Map.Entry<String, Livro>> meusLivros5 = new TreeSet<>(new ComparatorPag());
+		meusLivros5.addAll(meusLivros.entrySet());
+		
+		for (Map.Entry<String, Livro> livro2 : meusLivros5) {
+			System.out.println(livro2.getKey() + " - " + livro2.getValue().getNome() + " - " + livro2.getValue().getPaginas() );
+		}
+		
 		
 		
 }
 	
 }
+
+class Livro {
+	private String nome;
+	private Integer paginas;
+	
+	public Livro(String nome, Integer paginas) {
+		super();
+		this.nome = nome;
+		this.paginas = paginas;
+	}
+
+	public String getNome() {
+		return nome;
+	}
+
+	public void setNome(String nome) {
+		this.nome = nome;
+	}
+
+	public Integer getPaginas() {
+		return paginas;
+	}
+
+	public void setPaginas(Integer paginas) {
+		this.paginas = paginas;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(nome, paginas);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Livro other = (Livro) obj;
+		return Objects.equals(nome, other.nome) && Objects.equals(paginas, other.paginas);
+	}
+
+	@Override
+	public String toString() {
+		return "livro [nome=" + nome + ", paginas=" + paginas + "]";
+	}
+	
+	
+	
+}
+
+class ComparatorNome implements Comparator<Map.Entry<String, Livro>> {
+
+	@Override
+	public int compare(Entry<String, Livro> l1, Entry<String, Livro> l2) {
+		// TODO Auto-generated method stub
+		return l1.getValue().getNome().compareToIgnoreCase(l2.getValue().getNome());
+	}
+	
+}
+
+class ComparatorPag implements Comparator<Map.Entry<String, Livro>> {
+
+	@Override
+	public int compare(Entry<String, Livro> l1, Entry<String, Livro> l2) {
+		// TODO Auto-generated method stub
+		return l1.getValue().getPaginas().compareTo(l2.getValue().getPaginas());
+	}
+	
+}
+
+
+
